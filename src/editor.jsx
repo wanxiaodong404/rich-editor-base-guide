@@ -1,8 +1,10 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import {stateToMarkdown} from 'draft-js-export-markdown'
-import {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier, CompositeDecorator} from 'draft-js'
+import draft,{Editor, convertToRaw, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier, CompositeDecorator} from 'draft-js'
 import ToolBar from './components/tool-bar.jsx'
+import { Link, findLinkEntities } from './components/link.jsx'
+import {colorStyleMap} from './components/color.jsx'
 import './assets/style/app.less'
 
 
@@ -17,7 +19,7 @@ class EditorContainer extends React.Component {
               strategy: findLinkEntities,
               component: Link,
             },
-          ]);
+        ]);
 
         this.state = {
             editorState: EditorState.createEmpty(decorator)
@@ -29,14 +31,15 @@ class EditorContainer extends React.Component {
     }
     render() {
         return (<div>
-        <h3 text-align='center'>draft.js 实现编辑器</h3>
-        <ToolBar execCommand={this.toggleStyle} />
-        <Editor 
-        onChange={this.onChange} 
-        handleKeyCommand={this.handleKeyCommand}
-        keyBindingFn={this.myKeyBindingFn}
-        placeholder='type your content'
-        editorState={this.state.editorState} />
+            <h3 text-align='center'>draft.js 实现编辑器</h3>
+            <ToolBar execCommand={this.toggleStyle} />
+            <Editor 
+            customStyleMap={colorStyleMap}
+            onChange={this.onChange} 
+            handleKeyCommand={this.handleKeyCommand}
+            keyBindingFn={this.myKeyBindingFn}
+            placeholder='type your content'
+            editorState={this.state.editorState} />
         </div>)
     }
     /**
@@ -44,7 +47,8 @@ class EditorContainer extends React.Component {
      * @param {*} editorState 
      */
     onChange(editorState) {
-        this.setState({editorState})
+        this.setState({editorState});
+        console.log(editorState.getCurrentInlineStyle(),convertToRaw(editorState.getCurrentContent()))
     }
     /**
      * 执行富文本命令方法
@@ -66,26 +70,21 @@ class EditorContainer extends React.Component {
         return getDefaultKeyBinding(e)
     }
     /**
-     * 切换加粗样式
+     * 切换样式
      */
     toggleStyle(data) {
-        let command = data.command.toUpperCase();
-        let inlineStyle = ['BOLD', 'ITALIC', 'CREATELINK']
-        let BlockStyle = {
-            'H1': 'header-one',
-            'H2': 'header-two',
-            'H3': 'header-three',
-            'H4': 'header-four',
-            'H5': 'header-five',
-        }
+        let command = data.draftCommand.toUpperCase();
+        let inlineStyle = ['BOLD', 'ITALIC', 'LINK', 'COLOR']
         if (inlineStyle.indexOf(command) >= 0) {
-            if (command === 'CREATELINK') {
+            if (command === 'LINK') {
                 this.toggleLinkStyle(data.params)
+            } else if (command === 'COLOR') {
+                this.toggleColorStyle(data.params.name)
             } else {
-                this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, command))
+                this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, command, data.params))
             }
         } else {
-            this.onChange(RichUtils.toggleBlockType(this.state.editorState, BlockStyle[command]))
+            this.onChange(RichUtils.toggleBlockType(this.state.editorState, command))
         }
     }
     /**
@@ -101,7 +100,6 @@ class EditorContainer extends React.Component {
         const editorState = EditorState.set(this.state.editorState, {
             currentContent: contentStateWidthEntity
         })
-        console.log(contentStateWidthEntity)
 
         this.setState({
             editorState: RichUtils.toggleLink(
@@ -112,38 +110,49 @@ class EditorContainer extends React.Component {
         })
 
     }
+    /**
+     * 切换颜色
+     * @param {*} color 
+     */
+    toggleColorStyle(toggledColor) {
+            const {editorState} = this.state;
+            const selection = editorState.getSelection();
+
+            // Let's just allow one color at a time. Turn off all active colors.
+            const nextContentState = Object.keys(colorStyleMap)
+            .reduce((contentState, color) => {
+                return Modifier.removeInlineStyle(contentState, selection, color)
+            }, editorState.getCurrentContent());
+
+            let nextEditorState = EditorState.push(
+                editorState,
+                nextContentState,
+                'change-inline-style'
+            );
+
+            const currentStyle = editorState.getCurrentInlineStyle();
+
+            // Unset style override for current color.
+            if (selection.isCollapsed()) {
+                nextEditorState = currentStyle.reduce((state, color) => {
+                    return RichUtils.toggleInlineStyle(state, color);
+                }, nextEditorState);
+            }
+
+            // If the color is being toggled on, apply it.
+            if (!currentStyle.has(toggledColor)) {
+                nextEditorState = RichUtils.toggleInlineStyle(
+                    nextEditorState,
+                    toggledColor
+                );
+            }
+
+            this.onChange(nextEditorState);
+    }
+    componentDidMount() {
+        console.log(draft)
+    }
 }
-
-/**
- * 链接相关的
- * @param {*} contentBlock 
- * @param {*} callback 
- * @param {*} contentState 
- */
-function findLinkEntities(contentBlock, callback, contentState) {
-    contentBlock.findEntityRanges(
-      (character) => {
-        const entityKey = character.getEntity();
-        return (
-          entityKey !== null &&
-          contentState.getEntity(entityKey).getType() === 'LINK'
-        );
-      },
-      callback
-    );
-  }
-
-  const Link = (props) => {
-    const {url} = props.contentState.getEntity(props.entityKey).getData();
-    return (
-      <a href={url}>
-        {props.children}
-      </a>
-    );
-  };
-
-
-
 
 ReactDom.render(
     <EditorContainer/>,
