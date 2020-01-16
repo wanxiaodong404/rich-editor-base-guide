@@ -42,6 +42,7 @@ class EditorContainer extends React.Component {
             document.execCommand('formatBlock', false, data.command)
         } else {
             if (data.command === 'foreColor') {
+                console.log(data.command, data.params.color)
                 document.execCommand(data.command, false, data.params.color)
             } else {
                 document.execCommand(data.command, false, data.params)

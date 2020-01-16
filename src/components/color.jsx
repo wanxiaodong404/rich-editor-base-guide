@@ -2,7 +2,7 @@
  * @Author: wanxiaodong
  * @Date: 2020-01-16 16:40:01
  * @Last Modified by: wanxiaodong
- * @Last Modified time: 2020-01-16 17:17:35
+ * @Last Modified time: 2020-01-16 17:29:14
  * @Description: 
  */
 import React,{Component} from 'react'
@@ -44,7 +44,7 @@ export class ColorPicker extends Component {
             <div className="mask"></div>
             <div className="picker-box">
                 {Object.keys(colorStyleMap).map((item, index) => {
-                    return <span className="color-item" onClick={(e) => {
+                    return <span className="color-item" onMouseDown={(e) => {
                         this.clickHandle(item, colorStyleMap[item].color, e)
                     }} key={index} style={{background: colorStyleMap[item].color}}></span>
                 })}
