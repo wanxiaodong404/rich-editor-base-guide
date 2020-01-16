@@ -1,0 +1,42 @@
+
+
+#container {
+    max-width: 500px;
+    min-height: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 45px auto;
+}
+
+.editor-box {
+    min-height: 40px;
+    border: none;
+    outline: none;
+    &:empty {
+        &::before {
+            content: 'type your content'
+        }
+    }
+}
+
+.tool-bar {
+    padding-bottom: 15px;
+    margin-bottom: 15px ;
+    border-bottom: 1px solid #ccc;
+    button {
+        border: none;
+        outline: none;
+        background: none;
+    }
+    .button-item {
+        height: 25px;
+        line-height: 25px;
+        font-size: 13px;
+        padding: 0 10px;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        color: #333;
+    }
+}

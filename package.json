@@ -1,0 +1,50 @@
+{
+  "name": "rich-editor-base-guide",
+  "version": "1.0.0",
+  "description": "富文本编辑器基础指北",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --inspect-brk ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./config/webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sheldonWan/rich-editor-base-guide.git"
+  },
+  "keywords": [
+    "富文本",
+    "编辑器",
+    "学习",
+    "指南"
+  ],
+  "author": "wanxiaodong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sheldonWan/rich-editor-base-guide/issues"
+  },
+  "homepage": "https://github.com/sheldonWan/rich-editor-base-guide#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-es2015": "^7.0.0-beta.53",
+    "@babel/preset-react": "^7.7.4",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.4.2",
+    "draft-js": "^0.11.3",
+    "draft-js-export-markdown": "^1.4.0",
+    "html-webpack-plugin": "^3.2.0",
+    "less": "^3.10.3",
+    "less-loader": "^5.0.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "style-loader": "^1.1.2",
+    "webpack": "^4.41.5",
+    "webpack-dev-server": "^3.10.1"
+  },
+  "dependencies": {
+    "babel-preset-react": "^6.24.1",
+    "webpack-cli": "^3.3.10"
+  }
+}
