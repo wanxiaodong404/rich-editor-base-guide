@@ -20,9 +20,10 @@ class EditorContainer extends React.Component {
               component: Link,
             },
         ]);
-
+        let selection = window.getSelection()
         this.state = {
-            editorState: EditorState.createEmpty(decorator)
+            editorState: EditorState.createEmpty(decorator),
+            selection
         }
         this.onChange = this.onChange.bind(this)
         this.handleKeyCommand = this.handleKeyCommand.bind(this)
@@ -32,7 +33,7 @@ class EditorContainer extends React.Component {
     render() {
         return (<div>
             <h3 text-align='center'>draft.js 实现编辑器</h3>
-            <ToolBar execCommand={this.toggleStyle} />
+            <ToolBar execCommand={this.toggleStyle} selection={this.state.selection}/>
             <Editor 
             customStyleMap={colorStyleMap}
             onChange={this.onChange} 
@@ -48,7 +49,7 @@ class EditorContainer extends React.Component {
      */
     onChange(editorState) {
         this.setState({editorState});
-        console.log(editorState.getCurrentInlineStyle(),convertToRaw(editorState.getCurrentContent()))
+        // console.log(editorState.getCurrentInlineStyle(),convertToRaw(editorState.getCurrentContent()))
     }
     /**
      * 执行富文本命令方法
@@ -84,7 +85,7 @@ class EditorContainer extends React.Component {
                 this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, command, data.params))
             }
         } else {
-            this.onChange(RichUtils.toggleBlockType(this.state.editorState, command))
+            this.onChange(RichUtils.toggleBlockType(this.state.editorState, command.toLowerCase()))
         }
     }
     /**

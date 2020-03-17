@@ -2,7 +2,7 @@
  * @Author: wanxiaodong
  * @Date: 2020-01-16 16:40:01
  * @Last Modified by: wanxiaodong
- * @Last Modified time: 2020-01-16 17:29:14
+ * @Last Modified time: 2020-03-17 13:56:08
  * @Description: 
  */
 import React,{Component} from 'react'
@@ -28,6 +28,12 @@ export const colorStyleMap = {
     violet: {
         color: 'rgba(127, 0, 255, 1.0)',
     },
+    block: {
+        color: 'rgba(0, 0, 0, 1.0)'
+    },
+    white: {
+        color: 'rgba(255, 255, 255, 1.0)'
+    }
 };
 export class ColorPicker extends Component {
     constructor() {

@@ -1,7 +1,7 @@
 
 
 #container {
-    max-width: 500px;
+    max-width: 600px;
     min-height: 300px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -15,7 +15,8 @@
     outline: none;
     &:empty {
         &::before {
-            content: 'type your content'
+            content: 'type your content';
+            color: #999;
         }
     }
 }
@@ -30,6 +31,7 @@
         background: none;
     }
     .button-item {
+        display: inline-block;
         height: 25px;
         line-height: 25px;
         font-size: 13px;
@@ -38,6 +40,25 @@
         border: 1px solid #ccc;
         border-radius: 3px;
         color: #333;
+        white-space: nowrap;
+        margin-bottom: 15px;
+        &.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+    }
+    .command-block {
+        // margin-top: 15px;
+        label {
+            margin: 0 10px 0 0;
+            span {
+                color: #666;
+                font-size: 12px;
+            }
+            input {
+                width: 50px;
+            }
+        }
     }
 }
 

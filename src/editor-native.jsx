@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import ToolBar from './components/tool-bar.jsx'
+import RichUtils from './utils/rich-util-native'
 import './assets/style/app.less'
 
 
@@ -12,23 +13,32 @@ class EditorContainer extends React.Component {
         super();
         this.onChange = this.onChange.bind(this)
         this.toggleStyle = this.toggleStyle.bind(this)
+        this.showCommandHandle = this.showCommandHandle.bind(this)
+        let selection = window.getSelection()
+        this.state = {
+            selection,
+            showCommand: false
+        }
+        document.addEventListener('selectionchange', () => {
+            this.onChange(selection)
+        })
     }
     render() {
         return (<div>
-            <h3 text-align='center'>execCommand 实现编辑器</h3>
-            <ToolBar execCommand={this.toggleStyle} />
+            <h3 text-align='center' onClick={this.showCommandHandle}>execCommand 实现编辑器 ｜ <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand" target='_blank'>command 文档</a></h3>
+            <ToolBar execCommand={this.toggleStyle} selection={this.state.selection} showCommand={this.state.showCommand}/>
             <div className='editor-box' contentEditable='true'></div>
         </div>)
     }
     /**
      * 数据变化监控
-     * @param {*} editorState 
+     * @param {*} selection 
      */
-    onChange(editorState) {
-        this.setState({editorState})
+    onChange(selection) {
+    //    console.log(selection, selection.getRangeAt(0))
     }
     /**
-     * 切换加粗样式
+     * 切换样式
      */
     toggleStyle(data) {
         let BlockStyle = [
@@ -39,15 +49,23 @@ class EditorContainer extends React.Component {
             'H5',
         ]
         if (BlockStyle.indexOf(data.command) >= 0) {
-            document.execCommand('formatBlock', false, data.command)
+            /** 块级命令处理 */
+            RichUtils.toggleBlockStyle('formatBlock', data.command)
         } else {
+            /** 行内命令处理 */
             if (data.command === 'foreColor') {
-                console.log(data.command, data.params.color)
-                document.execCommand(data.command, false, data.params.color)
+                // 颜色处理
+                RichUtils.toggleInlineStyle(data.command, data.params.color)
             } else {
-                document.execCommand(data.command, false, data.params)
+                // 其他命令
+                RichUtils.toggleInlineStyle(data.command, data.params)
             }
         }
+    }
+    showCommandHandle() {
+        this.setState({
+            showCommand: true
+        })
     }
 }
 
