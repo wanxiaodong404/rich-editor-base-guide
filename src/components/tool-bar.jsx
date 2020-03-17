@@ -2,7 +2,7 @@
  * @Author: wanxiaodong
  * @Date: 2020-01-16 10:29:19
  * @Last Modified by: wanxiaodong
- * @Last Modified time: 2020-03-17 16:56:13
+ * @Last Modified time: 2020-03-17 17:20:03
  * @Description:  顶部工具栏
  */
 
@@ -51,6 +51,16 @@ export default class ToolBar extends Component {
                     text: 'COLOR',
                     command: 'foreColor',
                     draftCommand: 'COLOR',
+                },
+                {
+                    text: 'UNDO',
+                    command: 'undo',
+                    draftCommand: 'undo',
+                },
+                {
+                    text: 'REDO',
+                    command: 'redo',
+                    draftCommand: 'redo',
                 },
             ],
             showPicker: false,

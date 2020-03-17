@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDom from 'react-dom'
 import ToolBar from './components/tool-bar.jsx'
 import RichUtils from './utils/rich-util-native'
+import SelectionUtils from './utils/selection-util'
 import './assets/style/app.less'
 
 
@@ -14,7 +15,7 @@ class EditorContainer extends React.Component {
         this.onChange = this.onChange.bind(this)
         this.toggleStyle = this.toggleStyle.bind(this)
         this.showCommandHandle = this.showCommandHandle.bind(this)
-        let selection = window.getSelection()
+        let selection = SelectionUtils.getSelection();
         this.state = {
             selection,
             showCommand: false

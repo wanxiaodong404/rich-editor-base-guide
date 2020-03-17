@@ -76,6 +76,11 @@ class EditorContainer extends React.Component {
     toggleStyle(data) {
         let command = data.draftCommand.toUpperCase();
         let inlineStyle = ['BOLD', 'ITALIC', 'LINK', 'COLOR']
+        let method = ['UNDO', 'REDO'];
+        // 判定当前选择是否含有inlineStyle
+        // inlineStyle.forEach(item => {
+        //     console.log(this.state.editorState.getCurrentInlineStyle(), this.state.editorState.getCurrentInlineStyle().has(item), item)
+        // })
         if (inlineStyle.indexOf(command) >= 0) {
             if (command === 'LINK') {
                 this.toggleLinkStyle(data.params)
@@ -84,6 +89,9 @@ class EditorContainer extends React.Component {
             } else {
                 this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, command, data.params))
             }
+        } else if (method.indexOf(command) >= 0) {
+            let eidtorState = EditorState[data.draftCommand](this.state.editorState)
+            this.onChange(eidtorState)
         } else {
             this.onChange(RichUtils.toggleBlockType(this.state.editorState, command.toLowerCase()))
         }
@@ -98,10 +106,10 @@ class EditorContainer extends React.Component {
             url
         })
         const entityKey = contentStateWidthEntity.getLastCreatedEntityKey();
-        const editorState = EditorState.set(this.state.editorState, {
+        let editorState = EditorState.set(this.state.editorState, {
             currentContent: contentStateWidthEntity
         })
-
+        editorState = RichUtils.toggleInlineStyle(editorState, 'LINK')
         this.setState({
             editorState: RichUtils.toggleLink(
                 editorState,
