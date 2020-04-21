@@ -2,9 +2,10 @@
  * @Author: wanxiaodong
  * @Date: 2020-01-16 11:23:16
  * @Last Modified by: wanxiaodong
- * @Last Modified time: 2020-03-17 16:54:19
+ * @Last Modified time: 2020-04-08 17:33:59
  * @Description: 
  */
+import SectionUtils from './selection-util.js'
 export default {
     blockTag: ['p', 'div', 'selction', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
     inlineTag: ['span', 'a', 'b', 'bold', 'italc', 'strong'],
@@ -14,7 +15,7 @@ export default {
      * @param {*} params 
      */
     toggleBlockStyle(command, params) {
-        let range = document.getSelection().getRangeAt(0);
+        let range = SectionUtils.getRange();
         let {startContainer} = range;
         let tag = this.findBlockTag(startContainer)
         if (tag.toUpperCase() === params) {
@@ -48,6 +49,10 @@ export default {
             return this.findBlockTag(dom.parentElement)
         }
     },
+    /**
+     * 向上查找行内tag（大部分情况一般焦点获取到的节点都是text）
+     * @param {*} dom 
+     */
     findInlineTag(dom = {}) {
         let tagName = (dom.tagName || '').toLowerCase();
         if (this.inlineTag.indexOf(tagName) >= 0) {

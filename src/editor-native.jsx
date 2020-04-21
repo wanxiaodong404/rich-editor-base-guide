@@ -5,6 +5,8 @@ import RichUtils from './utils/rich-util-native'
 import SelectionUtils from './utils/selection-util'
 import './assets/style/app.less'
 
+import mentions from './decorator/metion.js'
+
 
 
 window.React = React
@@ -28,7 +30,7 @@ class EditorContainer extends React.Component {
         return (<div>
             <h3 text-align='center' onClick={this.showCommandHandle}>execCommand 实现编辑器 ｜ <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand" target='_blank'>command 文档</a></h3>
             <ToolBar execCommand={this.toggleStyle} selection={this.state.selection} showCommand={this.state.showCommand}/>
-            <div className='editor-box' contentEditable='true'></div>
+            <div ref='editor' className='editor-box' contentEditable='true' data-placeholder='请输入内容'></div>
         </div>)
     }
     /**
@@ -37,6 +39,7 @@ class EditorContainer extends React.Component {
      */
     onChange(selection) {
     //    console.log(selection, selection.getRangeAt(0))
+        this.watchUpdate(selection)
     }
     /**
      * 切换样式
@@ -66,6 +69,22 @@ class EditorContainer extends React.Component {
     showCommandHandle() {
         this.setState({
             showCommand: true
+        })
+    }
+    watchUpdate(selection) {
+        let lastChar = SelectionUtils.matchLastChar();
+        mentions.forEach(item => {
+            if (item.strategy(lastChar)) {
+                let command = item.command(lastChar);
+                if (command instanceof Array) {
+                    command.forEach(_command => {
+                        this.toggleStyle(_command)
+                    })
+                } else {
+                    this.toggleStyle(item.command(lastChar))
+                }
+                item.callback && item.callback()
+            }
         })
     }
 }

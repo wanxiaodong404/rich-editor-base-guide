@@ -3,7 +3,7 @@ import ReactDom from 'react-dom'
 import {stateToMarkdown} from 'draft-js-export-markdown'
 import draft,{Editor, convertToRaw, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier, CompositeDecorator} from 'draft-js'
 import ToolBar from './components/tool-bar.jsx'
-import { Link, findLinkEntities } from './components/link.jsx'
+import { Link, findLinkEntities, MentionItem, findMentionEntities } from './components/link.jsx'
 import {colorStyleMap} from './components/color.jsx'
 import './assets/style/app.less'
 
@@ -19,6 +19,10 @@ class EditorContainer extends React.Component {
               strategy: findLinkEntities,
               component: Link,
             },
+            {
+                strategy: findMentionEntities,
+                component: MentionItem,
+            }
         ]);
         let selection = window.getSelection()
         this.state = {
@@ -48,8 +52,16 @@ class EditorContainer extends React.Component {
      * @param {*} editorState 
      */
     onChange(editorState) {
-        this.setState({editorState});
+        let data = this.watchUpdate(editorState);
+        let changeData = {editorState};
+        this.setState(data ? Object.assign(changeData, data) : changeData);
         // console.log(editorState.getCurrentInlineStyle(),convertToRaw(editorState.getCurrentContent()))
+    }
+    watchUpdate(editorState) {
+        console.log(editorState, editorState.getCurrentContent())
+        // let content = window.prompt('请输入你要@的人')
+        let content = ''
+        content && this.createMention(content)
     }
     /**
      * 执行富文本命令方法
@@ -117,6 +129,29 @@ class EditorContainer extends React.Component {
                 entityKey
             )
         })
+
+    }
+    createMention(content) {
+        const contentState = this.state.editorState.getCurrentContent();
+        if (content) {
+            const contentStateWidthEntity = contentState.createEntity('MENTION', 'IMMUTABLE', {
+                content
+            })
+            const entityKey = contentStateWidthEntity.getLastCreatedEntityKey();
+            let editorState = EditorState.set(this.state.editorState, {
+                currentContent: contentStateWidthEntity
+            })
+            // editorState = RichUtils.toggleInlineStyle(editorState, 'LINK')
+            return {
+                editorState: RichUtils.toggleLink(
+                    editorState,
+                    editorState.getSelection(),
+                    entityKey
+                )
+            }
+        } else {
+            return {}
+        }
 
     }
     /**

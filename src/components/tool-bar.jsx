@@ -2,7 +2,7 @@
  * @Author: wanxiaodong
  * @Date: 2020-01-16 10:29:19
  * @Last Modified by: wanxiaodong
- * @Last Modified time: 2020-03-17 17:20:03
+ * @Last Modified time: 2020-04-17 17:12:38
  * @Description:  顶部工具栏
  */
 
@@ -89,7 +89,7 @@ export default class ToolBar extends Component {
                     <label><span>参数:</span><input vlue='' onChange={this.onCommandParamsChange} /></label>
                     <button className={`button-item ${this.state.range ? '' : 'disabled'}`} onMouseDown={() => this.appendRangeHandle()}>还原range</button>
                     <button className="button-item" onMouseDown={this.execCommand}>执行</button>
-                    <a href='https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand' className='button-item'>文档</a>
+                    <a target='_blank' href='https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand' className='button-item'>文档</a>
                 </section>}
             {this.state.showPicker && <ColorPicker pickerHandle={this.colorPicker} closeHandle={this.colorPickerClose}/>}
         </div>
