@@ -33,7 +33,7 @@
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.4.2",
-    "draft-js": "^0.11.3",
+    "draft-js": "^0.11.7",
     "draft-js-export-markdown": "^1.4.0",
     "html-webpack-plugin": "^3.2.0",
     "less": "^3.10.3",
